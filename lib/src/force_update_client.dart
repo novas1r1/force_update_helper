@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
 
@@ -35,7 +34,8 @@ class ForceUpdateClient {
     // * On Android, the current version may appear as `^X.Y.Z(.*)`
     // * But semver can only parse this if it's formatted as `^X.Y.Z-(.*)`
     // * and we only care about X.Y.Z, so we can remove the flavor
-    final currentVersionStr = RegExp(r'\d+\.\d+\.\d+').matchAsPrefix(packageInfo.version)!.group(0)!;
+    final currentVersionStr =
+        RegExp(r'\d+\.\d+\.\d+').matchAsPrefix(packageInfo.version)!.group(0)!;
 
     // * Parse versions in semver format
     final requiredVersion = Version.parse(requiredVersionStr);
@@ -56,16 +56,13 @@ class ForceUpdateClient {
     }
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       // * On iOS, use the given app ID
-      return iosAppStoreId.isNotEmpty
-          ? 'https://apps.apple.com/app/id$iosAppStoreId'
-          : null;
+      return iosAppStoreId.isNotEmpty ? 'https://apps.apple.com/app/id$iosAppStoreId' : null;
     } else if (defaultTargetPlatform == TargetPlatform.android) {
       final packageInfo = await PackageInfo.fromPlatform();
       // * On Android, use the package name from PackageInfo
       return 'https://play.google.com/store/apps/details?id=${packageInfo.packageName}';
     } else {
-      log('No store URL for platform: ${defaultTargetPlatform.name}',
-          name: _name);
+      log('No store URL for platform: ${defaultTargetPlatform.name}', name: _name);
       return null;
     }
   }
